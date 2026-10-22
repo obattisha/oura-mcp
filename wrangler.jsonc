@@ -1,0 +1,30 @@
+/**
+ * Secrets (set with `npx wrangler secret put <NAME>`):
+ *   OURA_CLIENT_ID, OURA_CLIENT_SECRET  - from your Oura API application
+ *   COOKIE_ENCRYPTION_KEY               - any random string, e.g. `openssl rand -hex 32`
+ */
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "oura-mcp",
+	"main": "src/index.ts",
+	"compatibility_date": "2026-10-01",
+	"compatibility_flags": ["nodejs_compat"],
+	"kv_namespaces": [
+		{
+			"binding": "OAUTH_KV",
+			"id": "<Add-KV-ID>"
+		}
+	],
+	"vars": {
+		// Only this Oura account may sign in. Must match the email on your Oura account.
+		"ALLOWED_OURA_EMAIL": "obattisha@gmail.com"
+	},
+	// Optional: serve on mcp.battisha.com instead of *.workers.dev. Requires battisha.com's
+	// DNS to be managed by Cloudflare (see README).
+	// "routes": [{ "pattern": "mcp.battisha.com", "custom_domain": true }],
+	"observability": { "enabled": true },
+	"dev": { "port": 8788 },
+	"secrets": {
+		"required": ["OURA_CLIENT_ID", "OURA_CLIENT_SECRET", "COOKIE_ENCRYPTION_KEY"]
+	}
+}
