@@ -1,6 +1,6 @@
 /**
  * Secrets (set with `npx wrangler secret put <NAME>`):
- *   OURA_CLIENT_ID, OURA_CLIENT_SECRET  - from your Oura API application
+ *   OURA_CLIENT_SECRET                  - from your Oura API application
  *   COOKIE_ENCRYPTION_KEY               - any random string, e.g. `openssl rand -hex 32`
  */
 {
@@ -17,7 +17,9 @@
 	],
 	"vars": {
 		// Only this Oura account may sign in. Must match the email on your Oura account.
-		"ALLOWED_OURA_EMAIL": "obattisha@gmail.com"
+		"ALLOWED_OURA_EMAIL": "obattisha@gmail.com",
+		// Not secret; the client secret is set in the dashboard.
+		"OURA_CLIENT_ID": "f8413fdb-3d35-41d7-a525-013f63a017fd"
 	},
 	// Optional: serve on mcp.battisha.com instead of *.workers.dev. Requires battisha.com's
 	// DNS to be managed by Cloudflare (see README).
