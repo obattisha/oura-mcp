@@ -124,9 +124,15 @@ function createServer() {
 				timestamp: string;
 			}[];
 
+			// Oura returns UTC timestamps; label hours in the caller's offset so they read as local time.
+			const offset = start_datetime.match(/([+-]\d{2}):?(\d{2})$/);
+			const offsetMin = offset ? Math.sign(Number(offset[1] + "1")) * (Math.abs(Number(offset[1])) * 60 + Number(offset[2])) : 0;
+			const suffix = offset ? `${offset[1]}:${offset[2]}` : "Z";
+
 			const buckets = new Map<string, { hour: string; source: string; n: number; sum: number; min: number; max: number }>();
 			for (const { bpm, source, timestamp } of rows) {
-				const hour = timestamp.slice(0, 13) + ":00";
+				const local = new Date(Date.parse(timestamp) + offsetMin * 60_000).toISOString();
+				const hour = `${local.slice(0, 13)}:00${suffix}`;
 				const key = `${hour}|${source}`;
 				const b = buckets.get(key) ?? { hour, source, n: 0, sum: 0, min: Infinity, max: -Infinity };
 				b.n++;
