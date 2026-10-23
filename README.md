@@ -32,11 +32,13 @@ npx wrangler deploy
 
 This prints something like `https://oura-mcp.<your-subdomain>.workers.dev`.
 
-**3. Oura API application.** Oura now requires OAuth for API access (personal access tokens are deprecated). In the Oura developer portal (cloud.ouraring.com, "My Applications"), create an application with redirect URI:
+**3. Oura API application.** Oura requires OAuth for API access (personal access tokens were removed in December 2025). Sign in at https://cloud.ouraring.com/oauth/applications (or https://developer.ouraring.com/applications), create an application, and set its redirect URI to:
 
 ```
 https://oura-mcp.<your-subdomain>.workers.dev/callback
 ```
+
+Copy the client ID and secret straight into the next step; the secret may only be shown once.
 
 **4. Secrets.**
 
