@@ -23,8 +23,5 @@
 	// DNS to be managed by Cloudflare (see README).
 	// "routes": [{ "pattern": "mcp.battisha.com", "custom_domain": true }],
 	"observability": { "enabled": true },
-	"dev": { "port": 8788 },
-	"secrets": {
-		"required": ["OURA_CLIENT_ID", "OURA_CLIENT_SECRET", "COOKIE_ENCRYPTION_KEY"]
-	}
+	"dev": { "port": 8788 }
 }
