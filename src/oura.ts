@@ -19,7 +19,8 @@ export const OURA_SCOPES = [
 	"workout",
 	"tag",
 	"session",
-	"spo2Daily",
+	"spo2",
+	"heart_health",
 ];
 
 // Collections queried with start_date / end_date (YYYY-MM-DD).
