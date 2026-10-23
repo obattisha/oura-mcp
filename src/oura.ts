@@ -125,7 +125,8 @@ export class OuraClient {
 		const url = OURA_API_BASE + path + (params ? `?${new URLSearchParams(params)}` : "");
 		let tokens = await this.tokens();
 		let resp = await fetch(url, { headers: { Authorization: `Bearer ${tokens.access_token}` } });
-		if (resp.status === 401) {
+		// A 401 for a missing scope won't be fixed by a new token, so don't burn a refresh on it.
+		if (resp.status === 401 && !(await resp.clone().text()).includes("scope")) {
 			// Token was revoked or expired early; refresh once and retry.
 			tokens = await refreshTokens(this.env, this.userId, tokens);
 			resp = await fetch(url, { headers: { Authorization: `Bearer ${tokens.access_token}` } });

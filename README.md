@@ -10,7 +10,6 @@ A remote MCP server on Cloudflare Workers (free plan) that gives Claude read-onl
 | `get_collection` | Raw documents from any date-based collection (`sleep`, `workout`, `session`, `enhanced_tag`, `daily_resilience`, `vO2_max`, …). High-resolution series are dropped unless `include_timeseries` is true |
 | `get_heart_rate` | Heart rate aggregated per hour and source, up to 7 days |
 | `get_personal_info` | Profile (age, weight, height, sex) |
-| `get_ring_configuration` | Ring hardware info |
 
 Date ranges default to the last 7 days.
 

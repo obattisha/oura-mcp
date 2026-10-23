@@ -14,6 +14,7 @@ const TIMESERIES_FIELDS = new Set([
 	"movement_30_sec",
 	"sleep_phase_5_min",
 	"sleep_phase_30_sec",
+	"app_sleep_phase_5_min",
 	"met",
 	"class_5_min",
 	"motion_count",
@@ -25,6 +26,7 @@ function stripTimeseries(doc: Record<string, unknown>) {
 
 const isoDate = (d: Date) => d.toISOString().slice(0, 10);
 const daysAgo = (n: number) => isoDate(new Date(Date.now() - n * 86_400_000));
+const nextDay = (day: string) => isoDate(new Date(Date.parse(day) + 86_400_000));
 
 const dateRange = {
 	start_date: z
@@ -49,6 +51,13 @@ function createServer() {
 	}
 	const oura = new OuraClient(env, props.ouraUserId);
 
+	// Some collections (e.g. sleep) treat end_date as exclusive, so query one
+	// extra day and trim by each document's `day` to make ranges inclusive.
+	const listDays = async (collection: string, start: string, end: string) => {
+		const docs = await oura.list(collection, { start_date: start, end_date: nextDay(end) });
+		return docs.filter((d) => typeof d.day !== "string" || (d.day >= start && d.day <= end));
+	};
+
 	server.registerTool(
 		"get_daily_summary",
 		{
@@ -57,9 +66,8 @@ function createServer() {
 			inputSchema: z.object(dateRange),
 		},
 		async ({ start_date = daysAgo(7), end_date = isoDate(new Date()) }) => {
-			const params = { start_date, end_date };
 			const sources = ["daily_sleep", "daily_readiness", "daily_activity", "daily_stress", "daily_spo2"] as const;
-			const results = await Promise.all(sources.map((s) => oura.list(s, params)));
+			const results = await Promise.all(sources.map((s) => listDays(s, start_date, end_date)));
 
 			const byDay = new Map<string, Record<string, unknown>>();
 			sources.forEach((source, i) => {
@@ -90,7 +98,7 @@ function createServer() {
 			}),
 		},
 		async ({ collection, start_date = daysAgo(7), end_date = isoDate(new Date()), include_timeseries }) => {
-			const docs = await oura.list(collection, { start_date, end_date });
+			const docs = await listDays(collection, start_date, end_date);
 			return json(include_timeseries ? docs : docs.map(stripTimeseries));
 		},
 	);
@@ -144,12 +152,6 @@ function createServer() {
 		"get_personal_info",
 		{ description: "Age, weight, height, and biological sex from the Oura profile." },
 		async () => json(await oura.personalInfo()),
-	);
-
-	server.registerTool(
-		"get_ring_configuration",
-		{ description: "The user's Oura ring hardware: model, color, size, firmware." },
-		async () => json(await oura.list("ring_configuration", {})),
 	);
 
 	return server;
