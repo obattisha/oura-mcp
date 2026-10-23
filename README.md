@@ -21,7 +21,7 @@ Date ranges default to the last 7 days.
 ```sh
 npm install
 npx wrangler login
-npx wrangler kv namespace create OAUTH_KV   # paste the printed id into wrangler.jsonc
+npx wrangler kv namespace create OAUTH_KV   # paste the printed id into wrangler.jsonc (already set for this deployment)
 ```
 
 **2. Deploy once to learn your URL.**

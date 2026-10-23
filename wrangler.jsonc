@@ -12,7 +12,7 @@
 	"kv_namespaces": [
 		{
 			"binding": "OAUTH_KV",
-			"id": "<Add-KV-ID>"
+			"id": "1d06beb00eb74cccaf5a08df66d051a9"
 		}
 	],
 	"vars": {
